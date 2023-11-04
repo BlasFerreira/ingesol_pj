@@ -140,23 +140,33 @@ class scraper:
 				'Resumen': self.find_text_or_none(soup,'tbody', 'j_id77:tb'),
 				'texto de la sentencia': self.find_text_or_none(soup,'div', 'panelTextoSent_body')
 			}
+
+			# Abre el archivo JSON en modo escritura ('w')
+			with open('date_base1.json', 'a', encoding='utf-8') as archivo:
+
+				# Agrega el nuevo diccionario en formato JSON
+				json.dump(dict_aux, archivo, ensure_ascii=False)
+				
+				# Agrega una coma para separar los diccionarios
+				archivo.write(",")
+
 			
-			# Load the existing JSON data from the file or create an empty list if the file doesn't exist
-			try:
-				with open('date_base.json', 'r', encoding='utf-8') as archivo_entrada:
-					existing_data = json.load(archivo_entrada)
-			except FileNotFoundError:
-				existing_data = []
+			# # Load the existing JSON data from the file or create an empty list if the file doesn't exist
+			# try:
+			# 	with open('date_base.json', 'r', encoding='utf-8') as archivo_entrada:
+			# 		existing_data = json.load(archivo_entrada)
+			# except FileNotFoundError:
+			# 	existing_data = []
 
-			# Append dict_aux to the existing list
-			existing_data.append(dict_aux)
+			# # Append dict_aux to the existing list
+			# existing_data.append(dict_aux)
 
-			# Write the updated list back to the file
-			with open('date_base.json', 'w', encoding='utf-8') as archivo_salida:
-				json.dump(existing_data, archivo_salida, ensure_ascii=False, indent=4,separators=(',', ':'))
+			# # Write the updated list back to the file
+			# with open('date_base.json', 'w', encoding='utf-8') as archivo_salida:
+			# 	json.dump(existing_data, archivo_salida, ensure_ascii=False, indent=4,separators=(',', ':'))
 
 
-			time.sleep(1)
+			# time.sleep(1)
 
 
 	def change_page(self):
@@ -201,7 +211,7 @@ if __name__ == "__main__":
 	chrome_driver_path = r'B:\work\ingesol_scrapy_poder_judicial\driver\chromedriver.exe'
 	link_poderj = "https://bjn.poderjudicial.gub.uy/BJNPUBLICA/busquedaSelectiva.seam"
 	# fecha_inicio = "07/02/1989"
-	fecha_inicio = "03/06/2005"
+	fecha_inicio = "18/04/2007"
 	fecha_fin = '02/11/2023'
 
 	# Crea una instancia de la clase scraper pasando la ruta del ejecutable como argumento.
