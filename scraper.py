@@ -117,6 +117,7 @@ class scraper:
 
 				# Modify the dict_aux to use the helper function for elements
 				dict_aux = {
+					'titulo': self.find_text_or_none(soup,'td', 'j_id3:0:j_id13').replace('/','_').replace(' ','') + '-' + self.find_text_or_none(soup,'td', 'j_id3:0:j_id15').replace(' ','_').replace('º',''),
 					'numero': self.find_text_or_none(soup,'td', 'j_id3:0:j_id13'),
 					'sede': self.find_text_or_none(soup,'td', 'j_id3:0:j_id15'),
 					'importancia': self.find_text_or_none(soup,'td', 'j_id3:0:j_id17'),
@@ -132,20 +133,23 @@ class scraper:
 					'descriptores' : self.find_text_or_none(soup,'tbody', 'j_id89:tb'),
 					'Resumen': self.find_text_or_none(soup,'tbody', 'j_id77:tb'),
 					'texto de la sentencia': self.find_text_or_none(soup,'div', 'panelTextoSent_body')
-				}				
+				}		
+
 
 				# Abre el archivo JSON en modo escritura ('w')
-				with open('date_base1.json', 'a', encoding='utf-8') as archivo:
-
+				with open(f'sentencias/{dict_aux["titulo"]}.json', 'w', encoding='utf-8') as archivo:
 					# Agrega el nuevo diccionario en formato JSON
-					json.dump(dict_aux, archivo, ensure_ascii=False)
-					
-					# Agrega una coma para separar los diccionarios
-					archivo.write(",")
+					json.dump(dict_aux, archivo, ensure_ascii=False,indent=4)				
+
 
 			return 0
 			
 		except Exception:
+			with open('fechas_error/fechaserror.json', 'a', encoding='utf-8') as archivo:
+				# Agrega el nuevo diccionario en formato JSON
+				json.dump(dict_aux["fecha"], archivo, ensure_ascii=False,indent=4)
+				# Agrega una coma para separar las fechas
+				archivo.write(",")
 
 			print(f'\n dict_aux[fecha] : { dict_aux["fecha"]}\n')
 			return dict_aux["fecha"]
