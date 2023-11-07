@@ -9,6 +9,7 @@ import json
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import Select
+from datetime import datetime, timedelta
 
 
 class scraper:
@@ -32,36 +33,144 @@ class scraper:
 	# PRINCIPAL METHOD
 	def filter_jurisprudencia(self):
 
-		self.driver.get( self.link_main )
-		# Encuentra y llena el campo "Fecha Desde" en la página web
-		fecha_desde = self.driver.find_element(By.ID, "formBusqueda:j_id20:j_id23:fechaDesdeCalInputDate")
-		fecha_desde.send_keys(self.date_from)
+		while True :
 
-		# Encuentra y llena el campo "Fecha Hasta" en la página web
-		fecha_hasta = self.driver.find_element(By.ID, "formBusqueda:j_id20:j_id147:fechaHastaCalInputDate")
-		fecha_hasta.send_keys(self.date_until)
-		# Simula presionar la tecla Enter
-		self.select_option_by_value()
+			try :
 
-		fecha_hasta.send_keys(Keys.ENTER)
+				self.driver.get( self.link_main )
+				# Encuentra y llena el campo "Fecha Desde" en la página web
+				fecha_desde = self.driver.find_element(By.ID, "formBusqueda:j_id20:j_id23:fechaDesdeCalInputDate")
+				fecha_desde.send_keys(self.date_from)
 
-		# print('\n ESPERANDO \n')
-		time.sleep(1)
+				# Encuentra y llena el campo "Fecha Hasta" en la página web
+				fecha_hasta = self.driver.find_element(By.ID, "formBusqueda:j_id20:j_id147:fechaHastaCalInputDate")
+				fecha_hasta.send_keys(self.date_until)
+				# Simula presionar la tecla Enter
+				self.select_option_by_value()
 
-		number_pages = self.extract_npages()
+				fecha_hasta.send_keys(Keys.ENTER)
+
+				print('\n ESPERANDO \n')
+
+				time.sleep(2)
+
+				number_pages = self.extract_npages()
+				print(number_pages)
+				
+
+				# # for page in tqdm(range(1,number_pages+1)) :
+				for page in tqdm(range(1,10)) :
+
+					# print(f'\n PAGINA NUMERO : { page } \n')
+
+					fecha_str = self.extract_document()
+
+					if fecha_str != 0 :
+					
+						print('\n SURGIO UN ERROR , VAMOS POR EL DIA SIGUIENTE \n')
+						print(f'\nlast date : { fecha_str }\n')
+						fecha = datetime.strptime(fecha_str, '%d/%m/%Y')
+						# Suma un día
+						nueva_fecha = fecha + timedelta(days=1)
+						# Convierte la nueva fecha en una cadena de texto
+						nueva_fecha_str = nueva_fecha.strftime('%d/%m/%Y')
+						print(f'\nnueva_fecha_str : {nueva_fecha_str}\n')
+
+						self.date_from = nueva_fecha_str
+
+					else :
+						print('\nVAMOS A CAMBIAR DE PAGINA\n')
+						self.change_page()
+
+					time.sleep(1)
+
+			except Exception:
+				print('ERROR EL METODO DE FILTER JURISPRUDENCIA')
+				# self.date_from = last_date
+
+
+	def extract_document(self):
+
+		dict_aux = {}
+		list_total = []
 		
+		try:
 
-		for page in tqdm(range(1,number_pages+1)) :
+			for sample in range(0,10) :		
 
-			# print(f'\n PAGINA NUMERO : { page } \n')
+				segundo_elemento= self.driver.find_element(By.ID, f"formResultados:dataTable:{sample}:colFec")
+				segundo_elemento.click()
+				# print('Esperando 1 segundo')
+				time.sleep(1)
 
-			self.extract_document()
+				# Cambia al manejo de la ventana emergente recién abierta
+				ventana_actual = self.driver.window_handles[0]  # 0 es el índice de la ventana principal
+				ventana_emergente = self.driver.window_handles[1]  # 1 es el índice de la ventana emergente
+				self.driver.switch_to.window(ventana_emergente)
+				time.sleep(1)
+
+				# Extrae el contenido HTML de la ventana emergente
+				html_ventana_emergente = self.driver.page_source
+				self.driver.switch_to.window(ventana_actual )
+
+				soup = BeautifulSoup(html_ventana_emergente,'html.parser')
+
+				# Modify the dict_aux to use the helper function for elements
+				dict_aux = {
+					'numero': self.find_text_or_none(soup,'td', 'j_id3:0:j_id13'),
+					'sede': self.find_text_or_none(soup,'td', 'j_id3:0:j_id15'),
+					'importancia': self.find_text_or_none(soup,'td', 'j_id3:0:j_id17'),
+					'tipo': self.find_text_or_none(soup,'td', 'j_id3:0:j_id19'),
+					'fecha': self.find_text_or_none(soup,'td', 'j_id21:0:j_id29'),
+					'ficha': self.find_text_or_none(soup,'td', 'j_id21:0:j_id31'),
+					'procedimiento': self.find_text_or_none(soup,'td', 'j_id21:0:j_id33'),
+					'materias': self.find_text_or_none(soup,'td', 'j_id35:0:j_id39'),
+					'firmantes': self.extract_table(soup,'firmantes', 'gridFirmantes:tb'),
+					'redactores': self.extract_table(soup,'redactores', 'gridRedactores:tb'),
+					'abstract': self.extract_table(soup,'abstract', 'j_id77:tb'),
+					'sentencias similares': self.extract_table(soup,'sentencias similares', 'gridSimil:tb'),
+					'descriptores' : self.find_text_or_none(soup,'tbody', 'j_id89:tb'),
+					'Resumen': self.find_text_or_none(soup,'tbody', 'j_id77:tb'),
+					'texto de la sentencia': self.find_text_or_none(soup,'div', 'panelTextoSent_body')
+				}				
+
+				# Abre el archivo JSON en modo escritura ('w')
+				with open('date_base1.json', 'a', encoding='utf-8') as archivo:
+
+					# Agrega el nuevo diccionario en formato JSON
+					json.dump(dict_aux, archivo, ensure_ascii=False)
+					
+					# Agrega una coma para separar los diccionarios
+					archivo.write(",")
+
+			return 0
 			
-			self.change_page()
+		except Exception:
 
-			time.sleep(1)
+			print(f'\n dict_aux[fecha] : { dict_aux["fecha"]}\n')
+			return dict_aux["fecha"]
+			
+			
+	def change_page(self):
 
+		max_attempts = 2
+		current_attempt = 0
 
+		while current_attempt < max_attempts:
+			try:
+
+				next_page =  self.driver.find_element(By.ID, f"formResultados:sigLink")
+				next_page.click()
+				time.sleep(1)
+				break
+
+			except Exception as e:
+				print(f'current_attempt : {current_attempt}')
+				print(f'Error {e}')
+				current_attempt += 1
+				time.sleep(5)
+
+								  
 	def select_option_by_value(self):
 		combobox = self.driver.find_element(By.NAME, "formBusqueda:j_id20:j_id240:j_id248")
 		
@@ -70,7 +179,6 @@ class scraper:
 		
 		# Selecciona la opción "Fecha ascendente" por su valor
 		select.select_by_value("FECHA_ASCENDENTE")		
-
 
 	# Define a helper function to find the text of an element or return None if not found
 	def find_text_or_none(self,soup,node, element_id):
@@ -98,97 +206,6 @@ class scraper:
 			return None
 
 				
-	def extract_document(self):
-
-		dict_aux = {}
-		list_total = []
-
-		for sample in range(0,10) :
-
-			segundo_elemento= self.driver.find_element(By.ID, f"formResultados:dataTable:{sample}:colFec")
-			segundo_elemento.click()
-			# print('Esperando 1 segundo')
-			time.sleep(1)
-
-			# Cambia al manejo de la ventana emergente recién abierta
-			ventana_actual = self.driver.window_handles[0]  # 0 es el índice de la ventana principal
-			ventana_emergente = self.driver.window_handles[1]  # 1 es el índice de la ventana emergente
-			self.driver.switch_to.window(ventana_emergente)
-			time.sleep(1)
-
-			# Extrae el contenido HTML de la ventana emergente
-			html_ventana_emergente = self.driver.page_source
-			self.driver.switch_to.window(ventana_actual )
-
-			soup = BeautifulSoup(html_ventana_emergente,'html.parser')
-
-			# Modify the dict_aux to use the helper function for elements
-			dict_aux = {
-				'numero': self.find_text_or_none(soup,'td', 'j_id3:0:j_id13'),
-				'sede': self.find_text_or_none(soup,'td', 'j_id3:0:j_id15'),
-				'importancia': self.find_text_or_none(soup,'td', 'j_id3:0:j_id17'),
-				'tipo': self.find_text_or_none(soup,'td', 'j_id3:0:j_id19'),
-				'fecha': self.find_text_or_none(soup,'td', 'j_id21:0:j_id29'),
-				'ficha': self.find_text_or_none(soup,'td', 'j_id21:0:j_id31'),
-				'procedimiento': self.find_text_or_none(soup,'td', 'j_id21:0:j_id33'),
-				'materias': self.find_text_or_none(soup,'td', 'j_id35:0:j_id39'),
-				'firmantes': self.extract_table(soup,'firmantes', 'gridFirmantes:tb'),
-				'redactores': self.extract_table(soup,'redactores', 'gridRedactores:tb'),
-				'abstract': self.extract_table(soup,'abstract', 'j_id77:tb'),
-				'sentencias similares': self.extract_table(soup,'sentencias similares', 'gridSimil:tb'),
-				'descriptores' : self.find_text_or_none(soup,'tbody', 'j_id89:tb'),
-				'Resumen': self.find_text_or_none(soup,'tbody', 'j_id77:tb'),
-				'texto de la sentencia': self.find_text_or_none(soup,'div', 'panelTextoSent_body')
-			}
-
-			# Abre el archivo JSON en modo escritura ('w')
-			with open('date_base1.json', 'a', encoding='utf-8') as archivo:
-
-				# Agrega el nuevo diccionario en formato JSON
-				json.dump(dict_aux, archivo, ensure_ascii=False)
-				
-				# Agrega una coma para separar los diccionarios
-				archivo.write(",")
-
-			
-			# # Load the existing JSON data from the file or create an empty list if the file doesn't exist
-			# try:
-			# 	with open('date_base.json', 'r', encoding='utf-8') as archivo_entrada:
-			# 		existing_data = json.load(archivo_entrada)
-			# except FileNotFoundError:
-			# 	existing_data = []
-
-			# # Append dict_aux to the existing list
-			# existing_data.append(dict_aux)
-
-			# # Write the updated list back to the file
-			# with open('date_base.json', 'w', encoding='utf-8') as archivo_salida:
-			# 	json.dump(existing_data, archivo_salida, ensure_ascii=False, indent=4,separators=(',', ':'))
-
-
-			# time.sleep(1)
-
-
-	def change_page(self):
-
-		max_attempts = 10
-		current_attempt = 0
-
-		while current_attempt < max_attempts:
-			try:
-
-				next_page =  self.driver.find_element(By.ID, f"formResultados:sigLink")
-				next_page.click()
-				time.sleep(1)
-				break
-
-			except Exception as e:
-				print(f'current_attempt : {current_attempt}')
-				print(f'Error {e}')
-				current_attempt += 1
-				time.sleep(5)
-
-								  
 	def extract_npages(self):
 
 		try : 
@@ -210,13 +227,13 @@ if __name__ == "__main__":
 	# Establece la ruta al ejecutable de ChromeDriver.
 	chrome_driver_path = r'B:\work\ingesol_scrapy_poder_judicial\driver\chromedriver.exe'
 	link_poderj = "https://bjn.poderjudicial.gub.uy/BJNPUBLICA/busquedaSelectiva.seam"
+
 	# fecha_inicio = "07/02/1989"
-	fecha_inicio = "18/04/2007"
+	fecha_inicio = "16/11/2007"
 	fecha_fin = '02/11/2023'
 
 	# Crea una instancia de la clase scraper pasando la ruta del ejecutable como argumento.
 	ins_scraper = scraper( chrome_driver_path,link_poderj,fecha_inicio,fecha_fin )
-
 	# Inicializa el controlador de Chrome.
 	ins_scraper.initialize_driver()
 
