@@ -1,0 +1,53 @@
+{
+    "titulo": "2.665_2007-Suprema_Corte_de_Justicia",
+    "numero": "2.665/2007          ",
+    "sede": "Suprema Corte de Justicia",
+    "importancia": "ALTA",
+    "tipo": "INTERLOCUTORIA",
+    "fecha": "19/11/2007",
+    "ficha": "34-24/2006",
+    "procedimiento": "PROCESO INCIDENTAL",
+    "materias": "DERECHO PROCESAL",
+    "firmantes": [
+        {
+            "nombre": "Dr. Leslie Alberto VAN ROMPAEY SERVILLO",
+            "cargo": "Ministro Suprema Corte de Justicia"
+        },
+        {
+            "nombre": "Dr. Daniel Iberico GUTIERREZ PROTO",
+            "cargo": "Ministro Suprema Corte de Justicia"
+        },
+        {
+            "nombre": "Dr. Jorge RUIBAL PINO",
+            "cargo": "Ministro Suprema Corte de Justicia"
+        },
+        {
+            "nombre": "Dra. Martha Beatriz CHAO FERNANDEZ",
+            "cargo": "Secretario/a Letrado/a SCJ"
+        }
+    ],
+    "redactores": [
+        {
+            "nombre": "Dr. Leslie Alberto VAN ROMPAEY SERVILLO",
+            "cargo": "Ministro Suprema Corte de Justicia"
+        }
+    ],
+    "abstract": [
+        {
+            "camino": "DERECHO PROCESAL->RECUSACION->RECUSACION DEL JUEZ",
+            "descriptores abstract": " "
+        },
+        {
+            "camino": "DERECHO PROCESAL->RECUSACION->RECUSACION DEL JUEZ->CAUSAS DE RECUSACION->CIRCUNSTACIAS QUE AFECTEN LA IMPARCIALIDAD",
+            "descriptores abstract": " "
+        },
+        {
+            "camino": "DERECHO PROCESAL->RECUSACION->RECUSACION DEL JUEZ->CAUSAS DE RECUSACION->CIRCUNSTACIAS QUE AFECTEN LA IMPARCIALIDAD->PREJUZGAMIENTO",
+            "descriptores abstract": " "
+        }
+    ],
+    "sentencias similares": null,
+    "descriptores": "",
+    "Resumen": "DERECHO PROCESAL->RECUSACION->RECUSACION DEL JUEZ DERECHO PROCESAL->RECUSACION->RECUSACION DEL JUEZ->CAUSAS DE RECUSACION->CIRCUNSTACIAS QUE AFECTEN LA IMPARCIALIDAD DERECHO PROCESAL->RECUSACION->RECUSACION DEL JUEZ->CAUSAS DE RECUSACION->CIRCUNSTACIAS QUE AFECTEN LA IMPARCIALIDAD->PREJUZGAMIENTO ",
+    "texto de la sentencia": "Montevideo, diecinueve de noviembre de dos mil siete\t\tVISTOS:\t\t\t\tEstos autos caratulados: \"BACOT, OSCAR C/ SRAS. MINISTRAS DEL T.A.C. DE 6o. TURNO, DRAS. E. MARTINEZ Y S. KLETT - INCIDENTE RECUSATORIO\", Ficha 34-24/2006.\t\tRESULTANDO Y CONSIDERANDO:\t\t\t\t1\tLa Corporación comparte sin reservas el informe producido por las señoras Ministras recusadas a fs. 375, 383, por lo que la pretensión incidental de apartamiento, claramente infundada, será rechazada de plano (art. 328.5 C.G.P.).\t\t\t\t2\tEn efecto, la Sala que aquellas integran actuó, en sede de proceso cautelar, con el grado de conocimiento periférico o superficial propio de dicha estructura procesal, en la calificación de los requisitos de fundabilidad de la medida cautelar solicitada (fumus bonus iuris y periculum in mora, art. 312 del C.G.P.).\t\t\t\tDe manera alguna puede sostenerse que la referencia a la verosimilitud de un \"viso de fraude\" implica prejuzgamiento alguno sobre la fundabilidad de la pretensión constitutiva del objeto principal cuyo progreso la medida cautelar tendía a asegurar. El juicio de probabilidad formulado dista conceptualmente en cuanto al grado de creencia, de la certeza o convencimiento pleno requerido para la actuación de la pretensión principal.\t\t\t\t3\tCuando el órgano de alzada actúa en la etapa procedimental correspondiente, en conocimiento sumario respecto de la pertinencia del cese de una medida cautelar, poniendo especial cuidado en los términos condicionales utilizados, que despejan toda duda razonable respecto de la provisoriedad de la decisión adoptada en sede de proceso cautelar, parece claro que la pretensión de recusación no puede ser acogida.\t\t\t\tEn suma, la imparcialidad del órgano jurisdiccional (art. 325 C.G.P.), principio jurídico y ético esencial en el ejercicio de la función judicial, en nada resultó afectada.\t\t\t\tPor lo expuesto, la Suprema Corte de Justicia, \t\tRESUELVE:\t\t\t\tDESESTIMASE LA RECUSACION PROMOVIDA.\t\t\t\tY DEVUELVASE."
+}
